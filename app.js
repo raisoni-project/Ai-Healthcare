@@ -23,55 +23,54 @@ app.use((req, res, next) => {
 });
 
 app.get('/', function (req, res) {
-   
+
     res.status(200).render('index');
-    
+
 });
 
 app.get('/sendtx', function (req, res) {
-    //var myAddress = '0xaAF7ADf9Ba290Ff8D2bBEa7703861eBa192C08e1'; //shubham
-    //var privateKey = Buffer.from('8ed638cfa20c2fa4ef4938dc50727850afd612ac715375e915eb92eb1c9b554e', 'hex')
-    //var toAddress = '0xd2E2fA7904d28d162E4d00aa1837C6597622f40A'; //lucky
-    //var amount = web3js.utils.toHex(1);
-    // test(myAddress, privateKey, toAddress, amount);
 
     res.status(200).render('send');
-    
+
 });
 
 app.post('/sendtx', function (req, res) {
-    console.log("abcd");
-    var publickey = req.body.pubkey;
-    var privateKey = Buffer.from(req.body.prtkey, 'hex');
-    console.log(privateKey);
-    var recevier = req.body.radd;
+
+
+    var publickey = req.body.pubkey;//'0xd2E2fA7904d28d162E4d00aa1837C6597622f40A';                   
+    var privateKey = Buffer.from(req.body.prtkey, 'hex');//'55ce8dedffaa3d7272fc8ff8687acfca72b28f06712697f61c7d71b1b12bf6bf'
+    var recevier = req.body.radd;//'';
     var amount = web3js.utils.toHex(req.body.amt);
-    //test(publickey, privateKey, recevier, amount);    
+
+    // console.log(publickey, privateKey, recevier, amount);
+    test(publickey, privateKey, recevier, amount);
     res.status(200).render('send');
-    
 });
 
 
-app.post('/gettx', function (req, res) {
+// app.post('/gettx', function (req, res) {
 
 
-    var myAddress = req.body.fname;//'0xd2E2fA7904d28d162E4d00aa1837C6597622f40A';
-    var privateKey = Buffer.from(req.body.lname, 'hex'); //'8ed638cfa20c2fa4ef4938dc50727850afd612ac715375e915eb92eb1c9b554e'
-    var toAddress = '0xd2E2fA7904d28d162E4d00aa1837C6597622f40A';//'0xaAF7ADf9Ba290Ff8D2bBEa7703861eBa192C08e1';
+//     var myAddress = req.body.fname;//'0xd2E2fA7904d28d162E4d00aa1837C6597622f40A';
+//     var privateKey = Buffer.from(req.body.lname, 'hex'); //'8ed638cfa20c2fa4ef4938dc50727850afd612ac715375e915eb92eb1c9b554e'
+//     var toAddress = '0xd2E2fA7904d28d162E4d00aa1837C6597622f40A';//'0xaAF7ADf9Ba290Ff8D2bBEa7703861eBa192C08e1';
 
-    var amount = web3js.utils.toHex(req.body.aname);
+//     var amount = web3js.utils.toHex(req.body.aname);
 
-    console.log(amount);
-    test(myAddress, privateKey, toAddress, amount);
-    
-});
+//     console.log(amount);
+//     test(myAddress, privateKey, toAddress, amount);
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+// });
 
-function test(myAddress, privateKey, toAddress, amount){
-  
+
+
+function test(myAdd, prtKey, toAdd, amt) {
+
+    var myAddress = myAdd;
+    var privateKey = prtKey;
+    var toAddress = toAdd;
     var Tx = require("ethereumjs-tx").Transaction
-    
+    //contract abi is the array that you can get from the ethereum wallet or etherscan
     var contractABI = [
         {
             "constant": false,
@@ -525,23 +524,27 @@ function test(myAddress, privateKey, toAddress, amount){
         }
     ];
     var contractAddress = "0x4B7047E0d3f4D7071e7C13Fe9727e7a98E533f5A";
+
     //creating contract object
     var contract = new web3js.eth.Contract(contractABI, contractAddress);
 
     var count;
-    
+    // get transaction count, later will used as nonce
     web3js.eth.getTransactionCount(myAddress).then(function (v) {
+        console.log("Count: " + v);
+        count = v;
+
+        var amount = amt;
 
         console.log(amount);
-
+        // creating raw tranaction
         var rawTransaction = { "from": myAddress, "gasPrice": web3js.utils.toHex(20 * 1e9), "gasLimit": web3js.utils.toHex(210000), "to": contractAddress, "value": "0x0", "data": contract.methods.transfer(toAddress, amount).encodeABI(), "nonce": web3js.utils.toHex(count) }
-         console.log(rawTransaction);
-
-        //var transaction = new Tx(rawTransaction);
-        const transaction = new Tx(rawTransaction, { chain: 'goerli', hardfork: 'petersburg' });
-
+        console.log(rawTransaction);
+        //creating tranaction via ethereumjs-tx
+        const transaction = new Tx(rawTransaction, { chain: 'goerli', hardfork: 'petersburg' }); ~
+        //signing transaction with private key
         transaction.sign(privateKey);
-
+        //sending transacton via web3js module
         web3js.eth.sendSignedTransaction('0x' + transaction.serialize().toString('hex'))
             .on('transactionHash', console.log);
 
@@ -551,3 +554,20 @@ function test(myAddress, privateKey, toAddress, amount){
             });
     })
 }
+
+
+// Do not touch
+app.use((req, res, next) => {
+    const error = new Error('Not Found');
+    error.status = 404;
+    next(error);
+});
+app.use((error, req, res, next) => {
+    res.status(error.status || 500);
+    res.json({
+        error: {
+            message: error.message
+        }
+    });
+});
+module.exports = app;
