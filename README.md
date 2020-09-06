@@ -1,2 +1,4 @@
 # Ai-Helathcare
-Raisoni Project
+npm install
+
+npm run serve
