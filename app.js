@@ -35,8 +35,6 @@ app.get('/sendtx', function (req, res) {
 });
 
 app.post('/sendtx', function (req, res) {
-
-
     var publickey = req.body.pubkey;//'0xd2E2fA7904d28d162E4d00aa1837C6597622f40A';                   
     var privateKey = Buffer.from(req.body.prtkey, 'hex');//'55ce8dedffaa3d7272fc8ff8687acfca72b28f06712697f61c7d71b1b12bf6bf'
     var recevier = req.body.radd;//'';
@@ -47,20 +45,27 @@ app.post('/sendtx', function (req, res) {
     res.status(200).render('send');
 });
 
+app.get('/gettx', function (req, res) {
 
-// app.post('/gettx', function (req, res) {
+    res.status(200).render('request');
+
+});
+
+app.post('/gettx', function (req, res) {
+    var publickey ='0xd2E2fA7904d28d162E4d00aa1837C6597622f40A';//'0xd2E2fA7904d28d162E4d00aa1837C6597622f40A';                   
+    var privateKey = Buffer.from('55ce8dedffaa3d7272fc8ff8687acfca72b28f06712697f61c7d71b1b12bf6bf', 'hex');//'55ce8dedffaa3d7272fc8ff8687acfca72b28f06712697f61c7d71b1b12bf6bf'
+    var recevier = req.body.radd;//'';
+    var amount = web3js.utils.toHex(req.body.amt);
+
+    // console.log(publickey, privateKey, recevier, amount);
+    test(publickey, privateKey, recevier, amount);
+    res.status(200).render('request');
+});
 
 
-//     var myAddress = req.body.fname;//'0xd2E2fA7904d28d162E4d00aa1837C6597622f40A';
-//     var privateKey = Buffer.from(req.body.lname, 'hex'); //'8ed638cfa20c2fa4ef4938dc50727850afd612ac715375e915eb92eb1c9b554e'
-//     var toAddress = '0xd2E2fA7904d28d162E4d00aa1837C6597622f40A';//'0xaAF7ADf9Ba290Ff8D2bBEa7703861eBa192C08e1';
 
-//     var amount = web3js.utils.toHex(req.body.aname);
 
-//     console.log(amount);
-//     test(myAddress, privateKey, toAddress, amount);
 
-// });
 
 
 
