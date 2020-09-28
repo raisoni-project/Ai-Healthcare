@@ -27,33 +27,33 @@
 </nav>
 
 <div class="jumbotron text-center">
-  <h1>My First Bootstrap Page</h1>
-  <p>Resize this responsive page to see the effect!</p> 
+  <h1>Blockchain</h1>
+  <p>Healthcare</p> 
 </div>
 
 
 <div class="container">
-  <form class="form-horizontal" role="form">
+  <form class="form-horizontal" role="form" method="POST" action="/gettx" >
     <fieldset>
       <legend>Request</legend>
 
        <div class="form-group">
-        <label class="col-sm-3 control-label" for="card-number">Address</label>
+        <label class="col-sm-3 control-label">Address</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" name="card-number" id="card-number" placeholder="Address">
+          <input type="text" class="form-control" name="radd" id="radd" placeholder="Address">
         </div>
       </div>
 
       <div class="form-group">
-        <label class="col-sm-3 control-label" for="cvv">Amount</label>
+        <label class="col-sm-3 control-label">Amount</label>
         <div class="col-sm-3">
-          <input type="text" class="form-control" name="cvv" id="cvv" placeholder="Amount">
+          <input type="text" class="form-control" name="amt" id="amt" placeholder="Amount">
         </div>
       </div>
       
       <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
-          <button type="button" class="btn btn-success">Pay Now</button>
+          <button type="submit" class="btn btn-success">Pay Now</button>
         </div>
       </div>
     </fieldset>
